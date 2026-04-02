@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff758c;
+            --bg-gradient: linear-gradient(180deg, #ff9a9e 0%, #fecfef 100%);
+            --glass: rgba(255, 255, 255, 0.9);
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--bg-gradient);
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+        }
+
+        .bg-blobs {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .card {
+            background: var(--glass);
+            padding: 40px 25px;
+            border-radius: 30px;
+            width: 85%;
+            max-width: 350px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            color: #d63384;
+            font-size: 2.5rem;
+            margin: 15px 0;
+        }
+
+        #message {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 1s ease-in-out, opacity 1s;
+            opacity: 0;
+        }
+
+        #message.open {
+            max-height: 500px; /* Large enough to show text */
+            opacity: 1;
+            margin-top: 20px;
+        }
+
+        p {
+            color: #444;
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+        .heart-main {
+            font-size: 50px;
+            cursor: pointer;
+            display: inline-block;
+            animation: beat 1.2s infinite;
+        }
+
+        @keyframes beat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .btn {
+            margin-top: 20px;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px;
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 117, 140, 0.4);
+            transition: transform 0.2s;
+        }
+
+        .btn:hover { transform: scale(1.05); }
+        .btn.hidden { display: none; }
+
+        .footer {
+            margin-top: 25px;
+            font-size: 11px;
+            color: #999;
+        }
+
+        /* Floating background hearts */
+        .floating-heart {
+            position: absolute;
+            bottom: -50px;
+            color: rgba(255, 255, 255, 0.5);
+            animation: float Up 6s linear infinite;
+        }
+
+        @keyframes floatUp {
+            to { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-blobs" id="bg-blobs"></div>
+
+<div class="card" id="mainCard">
+    <div class="heart-main">❤️</div>
+    <h1>For Queenie</h1>
+    
+    <button class="btn" id="openBtn" onclick="revealLetter()">Open Letter</button>
+
+    <div id="message">
+        <p>
+            From the moment I met you, everything felt different in the best way.<br><br>
+            You make my days brighter, my problems lighter, and my life happier.<br><br>
+            You're my <b>favorite person</b>. No matter what happens, I’ll always be here for you.<br><br>
+            I appreciate you, and I truly love you.
+        </p>
+        <div class="footer">Coded with ❤️ by Lucas</div>
+    </div>
+</div>
+
+<script>
+    function revealLetter() {
+        const message = document.getElementById("message");
+        const btn = document.getElementById("openBtn");
+        const card = document.getElementById("mainCard");
+
+        // 1. Hide Button
+        btn.classList.add("hidden");
+
+        // 2. Expand Message
+        message.classList.add("open");
+
+        // 3. Add a little "pop" to the card
+        card.style.transform = "scale(1.05)";
+        setTimeout(() => {
+            card.style.transform = "scale(1)";
+        }, 300);
+
+        // 4. Trigger Heart Burst
+        for(let i=0; i<15; i++) {
+            createParticle(window.innerWidth/2, window.innerHeight/2);
+        }
+    }
+
+    function createParticle(x, y) {
+        const p = document.createElement('div');
+        p.innerHTML = '❤️';
+        p.style.position = 'fixed';
+        p.style.left = x + 'px';
+        p.style.top = y + 'px';
+        p.style.fontSize = (Math.random() * 20 + 10) + 'px';
+        p.style.pointerEvents = 'none';
+        p.style.zIndex = '100';
+        document.body.appendChild(p);
+
+        const destinationX = (Math.random() - 0.5) * 300;
+        const destinationY = (Math.random() - 0.5) * 300;
+
+        const animation = p.animate([
+            { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+            { transform: `translate(${destinationX}px, ${destinationY}px) scale(0)`, opacity: 0 }
+        ], {
+            duration: 1000 + Math.random() * 1000,
+            easing: 'cubic-bezier(0, .9, .57, 1)'
+        });
+
+        animation.onfinish = () => p.remove();
+    }
+
+    // Continuous floating hearts
+    setInterval(() => {
+        const h = document.createElement('div');
+        h.className = 'floating-heart';
+        h.innerHTML = '❤️';
+        h.style.left = Math.random() * 100 + 'vw';
+        h.style.fontSize = (Math.random() * 20 + 10) + 'px';
+        h.style.animation = `floatUp ${Math.random() * 3 + 5}s linear forwards`;
+        document.getElementById('bg-blobs').appendChild(h);
+        setTimeout(() => h.remove(), 8000);
+    }, 500);
+</script>
+
+</body>
+</html>
